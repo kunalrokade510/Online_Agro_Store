@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Cart - Agro Store{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4">🛒 Shopping Cart</h1>
+
+{% if cart %}
+<div class="card cart-table">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Image</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart %}
+            <tr>
+                <td>
+                    <a href="/product/{{ item.product_id }}"><strong>{{ item.name }}</strong></a>
+                </td>
+                <td>
+                    {% if item.image %}
+                    <img src="{{ url_for('static', filename='uploads/' + item.image) }}" alt="{{ item.name }}">
+                    {% else %}
+                    <img src="https://via.placeholder.com/60" alt="{{ item.name }}">
+                    {% endif %}
+                </td>
+                <td>₹{{ "%.2f"|format(item.price) }}</td>
+                <td>
+                    <div class="quantity-controls">
+                        <a href="/update_cart/{{ item.id }}/dec" class="btn btn-sm">-</a>
+                        <span class="quantity">{{ item.quantity }}</span>
+                        <a href="/update_cart/{{ item.id }}/inc" class="btn btn-sm">+</a>
+                    </div>
+                    {% if item.quantity >= item.stock %}
+                    <small class="text-danger">Max stock reached</small>
+                    {% endif %}
+                </td>
+                <td><strong>₹{{ "%.2f"|format(item.price * item.quantity) }}</strong></td>
+                <td>
+                    <a href="/update_cart/{{ item.id }}/remove" class="btn btn-danger btn-sm" onclick="return confirm('Remove this item?')">Remove</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="cart-summary mt-4">
+    <h3>Order Summary</h3>
+    <div class="summary-row">
+        <span>Total Items:</span>
+        <span>{{ cart|length }}</span>
+    </div>
+    <div class="summary-row">
+        <span>Total Amount:</span>
+        <span>₹{{ "%.2f"|format(total) }}</span>
+    </div>
+    <div class="text-center mt-4">
+        <a href="/products" class="btn btn-secondary">Continue Shopping</a>
+        <a href="/payment" class="btn btn-success btn-lg">Proceed to Checkout</a>
+    </div>
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">🛒</div>
+    <h3>Your Cart is Empty</h3>
+    <p>Add some products to your cart!</p>
+    <a href="/products" class="btn btn-primary">Start Shopping</a>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Agro Store{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+{% if session.get('user_id') %}
+<!-- USER NAVBAR -->
+<nav class="navbar">
+    <div class="container">
+        <a href="/products" class="navbar-brand">🌾 Agro Store</a>
+        
+        <ul class="navbar-nav">
+            <li><a href="/products">Products</a></li>
+            <li><a href="/wishlist">❤ Wishlist</a></li>
+            <li><a href="/cart">🛒 Cart</a></li>
+            <li><a href="/orders">📦 Orders</a></li>
+            <li><a href="/user/profile">👤 Profile</a></li>
+            <li><a href="/logout" class="btn btn-outline">Logout</a></li>
+        </ul>
+    </div>
+</nav>
+{% endif %}
+
+{% if session.get('admin') %}
+<!-- ADMIN NAVBAR -->
+<nav class="navbar">
+    <div class="container">
+        <a href="/admin/dashboard" class="navbar-brand">⚙ Admin Panel</a>
+        
+        <ul class="navbar-nav">
+            <li><a href="/admin/dashboard">📊 Dashboard</a></li>
+            <li><a href="/admin/products">📦 Products</a></li>
+            <li><a href="/admin/orders">🛍 Orders</a></li>
+            <li><a href="/admin/profile">👤 Profile</a></li>
+            <li><a href="/logout" class="btn btn-outline">Logout</a></li>
+        </ul>
+    </div>
+</nav>
+{% endif %}
+
+<!-- FLASH MESSAGES -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="container" style="margin-top: 1rem;">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">
+        {{ message }}
+        <button class="close-btn" onclick="this.parentElement.remove()">&times;</button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<!-- CONTENT -->
+<div class="container" style="min-height: calc(100vh - 200px); padding: 2rem 0;">
+    {% block content %}{% endblock %}
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

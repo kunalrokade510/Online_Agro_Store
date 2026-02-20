@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - Agro Store{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <!-- Product Image -->
+            <div>
+                {% if product.image %}
+                <img src="{{ url_for('static', filename='uploads/' + product.image) }}" alt="{{ product.name }}" style="width: 100%; border-radius: 12px;">
+                {% else %}
+                <img src="https://via.placeholder.com/500x500?text=No+Image" alt="{{ product.name }}" style="width: 100%; border-radius: 12px;">
+                {% endif %}
+            </div>
+
+            <!-- Product Info -->
+            <div>
+                <h1>{{ product.name }}</h1>
+                <p class="product-category">Category: {{ product.category }}</p>
+                
+                <!-- Rating -->
+                <div class="product-rating">
+                    <div class="stars">
+                        {% for i in range(5) %}
+                            {% if i < avg_rating %}★{% else %}☆{% endif %}
+                        {% endfor %}
+                    </div>
+                    <span class="rating-text">({{ avg_rating }} / 5.0 - {{ reviews|length }} reviews)</span>
+                </div>
+
+                <h2 class="product-price">₹{{ "%.2f"|format(product.price) }}</h2>
+
+                <p class="product-description">{{ product.description }}</p>
+
+                <!-- Stock Info -->
+                {% if product.stock > 0 %}
+                <p class="text-success"><strong>In Stock: {{ product.stock }} units available</strong></p>
+                {% else %}
+                <p class="text-danger"><strong>Out of Stock</strong></p>
+                {% endif %}
+
+                <!-- Action Buttons -->
+                <div class="product-actions" style="margin-top: 2rem;">
+                    {% if product.stock > 0 %}
+                    <a href="/buy_now/{{ product.id }}" class="btn btn-success btn-lg">Buy Now</a>
+                    <a href="/add_to_cart/{{ product.id }}" class="btn btn-primary btn-lg">Add to Cart</a>
+                    {% else %}
+                    <button class="btn btn-secondary btn-lg" disabled>Out of Stock</button>
+                    {% endif %}
+                    
+                    <a href="/add_to_wishlist/{{ product.id }}" class="btn btn-outline">
+                        {% if in_wishlist %}Remove from{% else %}Add to{% endif %} Wishlist
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- REVIEWS SECTION -->
+<div class="reviews-section">
+    <h2>Customer Reviews</h2>
+
+    <!-- Add Review Form -->
+    {% if not user_review %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <h3>Write a Review</h3>
+            <form method="POST" action="/add_review/{{ product.id }}">
+                <div class="form-group">
+                    <label class="form-label">Rating:</label>
+                    <div class="star-rating">
+                        <span class="star" data-rating="1">☆</span>
+                        <span class="star" data-rating="2">☆</span>
+                        <span class="star" data-rating="3">☆</span>
+                        <span class="star" data-rating="4">☆</span>
+                        <span class="star" data-rating="5">☆</span>
+                    </div>
+                    <input type="hidden" name="rating" id="rating-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Comment:</label>
+                    <textarea name="comment" class="form-control" rows="4" placeholder="Share your experience..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit Review</button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">You have already reviewed this product.</div>
+    {% endif %}
+
+    <!-- Display Reviews -->
+    {% if reviews %}
+    {% for review in reviews %}
+    <div class="review-card">
+        <div class="review-header">
+            <div>
+                <div class="review-author">{{ review.user_name }}</div>
+                <div class="review-rating">
+                    {% for i in range(5) %}
+                        {% if i < review.rating %}★{% else %}☆{% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="review-date">{{ review.created_at }}</div>
+        </div>
+        {% if review.comment %}
+        <p class="review-comment">{{ review.comment }}</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% else %}
+    <p class="text-muted">No reviews yet. Be the first to review!</p>
+    {% endif %}
+</div>
+
+<div class="text-center mt-4">
+    <a href="/products" class="btn btn-secondary">← Back to Products</a>
+</div>
+{% endblock %}

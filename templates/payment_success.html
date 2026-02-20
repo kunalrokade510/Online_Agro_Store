@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Order Successful - Agro Store{% endblock %}
+
+{% block content %}
+<div class="text-center" style="padding: 4rem 0;">
+    <div style="font-size: 5rem; color: #2ecc71; margin-bottom: 1rem;">✓</div>
+    <h1 style="color: #2ecc71; margin-bottom: 1rem;">Order Placed Successfully!</h1>
+    <p style="font-size: 1.2rem; color: #7f8c8d; margin-bottom: 2rem;">Thank you for your purchase. Your order has been confirmed.</p>
+    
+    <div class="card" style="max-width: 600px; margin: 0 auto;">
+        <div class="card-body">
+            <h3>What's Next?</h3>
+            <ul style="text-align: left; line-height: 2;">
+                <li>✉️ You will receive an order confirmation email shortly</li>
+                <li>📦 Your order will be processed within 24 hours</li>
+                <li>🚚 Track your order status in "My Orders"</li>
+            </ul>
+        </div>
+    </div>
+
+    <div style="margin-top: 3rem;">
+        <a href="/orders" class="btn btn-primary btn-lg">View My Orders</a>
+        <a href="/products" class="btn btn-secondary btn-lg">Continue Shopping</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Profile{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4">👤 Admin Profile</h1>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+    <!-- Profile Form -->
+    <div class="card">
+        <div class="card-header">Edit Profile</div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="form-label">Full Name:</label>
+                    <input type="text" name="name" class="form-control" value="{{ profile.name if profile else 'Admin' }}">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Date of Birth:</label>
+                    <input type="date" name="dob" class="form-control" value="{{ profile.dob if profile else '' }}">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Gender:</label>
+                    <select name="gender" class="form-control">
+                        <option value="">Select Gender</option>
+                        <option value="Male" {% if profile and profile.gender == 'Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if profile and profile.gender == 'Female' %}selected{% endif %}>Female</option>
+                        <option value="Other" {% if profile and profile.gender == 'Other' %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Profile Picture:</label>
+                    <input type="file" name="image" class="form-control" accept="image/*" onchange="previewImage(this, 'admin-preview')">
+                </div>
+
+                {% if profile and profile.image %}
+                <div class="form-group">
+                    <label class="form-label">Current Picture:</label><br>
+                    <img id="admin-preview" src="{{ url_for('static', filename='uploads/' + profile.image) }}" style="max-width: 200px; border-radius: 12px;">
+                </div>
+                {% else %}
+                <div class="form-group">
+                    <img id="admin-preview" src="" style="max-width: 200px; border-radius: 12px; display: none;">
+                </div>
+                {% endif %}
+
+                <button type="submit" class="btn btn-primary btn-block">Update Profile</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Account Info -->
+    <div>
+        <div class="card mb-3">
+            <div class="card-header">Account Information</div>
+            <div class="card-body">
+                <p><strong>Username:</strong> {{ admin.username }}</p>
+                <p><strong>Role:</strong> Administrator</p>
+                {% if profile %}
+                <p><strong>Name:</strong> {{ profile.name if profile.name else 'Not set' }}</p>
+                <p><strong>Gender:</strong> {{ profile.gender if profile.gender else 'Not set' }}</p>
+                <p><strong>Date of Birth:</strong> {{ profile.dob if profile.dob else 'Not set' }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Quick Actions</div>
+            <div class="card-body">
+                <a href="/admin/change_password" class="btn btn-warning btn-block mb-2">🔐 Change Password</a>
+                <a href="/admin/dashboard" class="btn btn-primary btn-block mb-2">📊 Dashboard</a>
+                <a href="/admin/products" class="btn btn-success btn-block mb-2">📦 Manage Products</a>
+                <a href="/admin/orders" class="btn btn-info btn-block">🛍️ Manage Orders</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

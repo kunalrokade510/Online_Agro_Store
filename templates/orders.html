@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}My Orders - Agro Store{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4">📦 My Orders</h1>
+
+{% if orders %}
+<div class="card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Image</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>Order Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td><strong>#{{ order.id }}</strong></td>
+                <td>
+                    {% if order.image %}
+                    <img src="{{ url_for('static', filename='uploads/' + order.image) }}" alt="{{ order.name }}">
+                    {% else %}
+                    <img src="https://via.placeholder.com/60" alt="{{ order.name }}">
+                    {% endif %}
+                </td>
+                <td>{{ order.name }}</td>
+                <td>{{ order.quantity }}</td>
+                <td>₹{{ "%.2f"|format(order.total_price) }}</td>
+                <td>
+                    {% if order.status == 'confirmed' %}
+                    <span class="badge" style="background: #2ecc71; color: white; padding: 0.5rem 1rem; border-radius: 20px;">Confirmed</span>
+                    {% elif order.status == 'shipped' %}
+                    <span class="badge" style="background: #3498db; color: white; padding: 0.5rem 1rem; border-radius: 20px;">Shipped</span>
+                    {% elif order.status == 'delivered' %}
+                    <span class="badge" style="background: #27ae60; color: white; padding: 0.5rem 1rem; border-radius: 20px;">Delivered</span>
+                    {% elif order.status == 'cancelled' %}
+                    <span class="badge" style="background: #e74c3c; color: white; padding: 0.5rem 1rem; border-radius: 20px;">Cancelled</span>
+                    {% else %}
+                    <span class="badge" style="background: #95a5a6; color: white; padding: 0.5rem 1rem; border-radius: 20px;">{{ order.status }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ order.order_date }}</td>
+                <td>
+                    <a href="/download_invoice/{{ order.id }}" class="btn btn-primary btn-sm">📄 Invoice</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">📦</div>
+    <h3>No Orders Yet</h3>
+    <p>You haven't placed any orders</p>
+    <a href="/products" class="btn btn-primary">Start Shopping</a>
+</div>
+{% endif %}
+{% endblock %}

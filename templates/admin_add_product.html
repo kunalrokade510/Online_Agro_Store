@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Add Product - Admin{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card" style="max-width: 700px;">
+        <h2>➕ Add New Product</h2>
+        
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label class="form-label">Product Name:</label>
+                <input type="text" name="name" class="form-control" placeholder="Enter product name" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Category:</label>
+                <input type="text" name="category" class="form-control" placeholder="e.g., Seeds, Fertilizers, Tools" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Price (₹):</label>
+                <input type="number" name="price" class="form-control" placeholder="0.00" step="0.01" min="0" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Stock Quantity:</label>
+                <input type="number" name="stock" class="form-control" placeholder="0" min="0" value="0" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Description:</label>
+                <textarea name="description" class="form-control" rows="4" placeholder="Enter product description"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Product Image:</label>
+                <input type="file" name="image" class="form-control" accept="image/*" onchange="previewImage(this, 'product-preview')" required>
+            </div>
+
+            <div class="form-group">
+                <img id="product-preview" src="" style="max-width: 300px; border-radius: 12px; display: none;">
+            </div>
+
+            <button type="submit" class="btn btn-success btn-block">Add Product</button>
+            <a href="/admin/products" class="btn btn-secondary btn-block">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Agro Store{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4">📊 Admin Dashboard</h1>
+
+<!-- STATISTICS CARDS -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">📦</div>
+        <div class="stat-value">{{ total_products }}</div>
+        <div class="stat-label">Total Products</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">🛍️</div>
+        <div class="stat-value">{{ total_orders }}</div>
+        <div class="stat-label">Total Orders</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-value">{{ total_users }}</div>
+        <div class="stat-label">Total Users</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value">₹{{ "%.2f"|format(total_revenue) }}</div>
+        <div class="stat-label">Total Revenue</div>
+    </div>
+</div>
+
+<!-- RECENT ORDERS -->
+<div class="card mt-4">
+    <div class="card-header">Recent Orders</div>
+    <div class="card-body">
+        {% if recent_orders %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in recent_orders %}
+                <tr>
+                    <td><strong>#{{ order.id }}</strong></td>
+                    <td>{{ order.user_name }}</td>
+                    <td>{{ order.product_name }}</td>
+                    <td>{{ order.quantity }}</td>
+                    <td>₹{{ "%.2f"|format(order.total_price) }}</td>
+                    <td>
+                        {% if order.status == 'confirmed' %}
+                        <span style="color: #2ecc71;">●</span> Confirmed
+                        {% elif order.status == 'shipped' %}
+                        <span style="color: #3498db;">●</span> Shipped
+                        {% elif order.status == 'delivered' %}
+                        <span style="color: #27ae60;">●</span> Delivered
+                        {% else %}
+                        <span style="color: #95a5a6;">●</span> {{ order.status }}
+                        {% endif %}
+                    </td>
+                    <td>{{ order.order_date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="text-center mt-3">
+            <a href="/admin/orders" class="btn btn-primary">View All Orders</a>
+        </div>
+        {% else %}
+        <p class="text-muted">No orders yet</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- LOW STOCK ALERT -->
+{% if low_stock %}
+<div class="card mt-4">
+    <div class="card-header" style="background: #e74c3c; color: white;">⚠️ Low Stock Alert</div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Stock</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in low_stock %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.category }}</td>
+                    <td><span class="text-danger"><strong>{{ product.stock }} units</strong></span></td>
+                    <td><a href="/admin/edit_product/{{ product.id }}" class="btn btn-warning btn-sm">Restock</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<!-- SALES CHART -->
+<div class="chart-container">
+    <h3>Sales Overview (Last 7 Days)</h3>
+    {% if sales_data %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Orders</th>
+                <th>Revenue</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sale in sales_data %}
+            <tr>
+                <td>{{ sale.date }}</td>
+                <td>{{ sale.orders }}</td>
+                <td>₹{{ "%.2f"|format(sale.revenue) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="text-muted">No sales data available</p>
+    {% endif %}
+</div>
+
+<!-- CATEGORY SALES -->
+<div class="chart-container">
+    <h3>Category-wise Sales</h3>
+    {% if category_sales %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Revenue</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cat in category_sales %}
+            <tr>
+                <td>{{ cat.category }}</td>
+                <td>₹{{ "%.2f"|format(cat.revenue) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="text-muted">No sales data available</p>
+    {% endif %}
+</div>
+{% endblock %}

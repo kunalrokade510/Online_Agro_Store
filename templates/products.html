@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Products - Agro Store{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4">🌾 Our Products</h1>
+
+<!-- FILTER SECTION -->
+<div class="filter-section">
+    <form method="GET" action="/products">
+        <div class="filter-row">
+            <!-- Search -->
+            <div class="form-group">
+                <label class="form-label">Search:</label>
+                <input type="text" name="search" class="form-control" placeholder="Search products..." value="{{ search }}">
+            </div>
+
+            <!-- Category -->
+            <div class="form-group">
+                <label class="form-label">Category:</label>
+                <select name="category" class="form-control">
+                    <option value="">All Categories</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.category }}" {% if category == cat.category %}selected{% endif %}>
+                        {{ cat.category }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Min Price -->
+            <div class="form-group">
+                <label class="form-label">Min Price:</label>
+                <input type="number" name="min_price" class="form-control" placeholder="₹0" value="{{ min_price }}">
+            </div>
+
+            <!-- Max Price -->
+            <div class="form-group">
+                <label class="form-label">Max Price:</label>
+                <input type="number" name="max_price" class="form-control" placeholder="₹10000" value="{{ max_price }}">
+            </div>
+
+            <!-- Sort -->
+            <div class="form-group">
+                <label class="form-label">Sort By:</label>
+                <select name="sort" class="form-control">
+                    <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest First</option>
+                    <option value="price_low" {% if sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                    <option value="price_high" {% if sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                    <option value="name" {% if sort == 'name' %}selected{% endif %}>Name: A to Z</option>
+                </select>
+            </div>
+
+            <!-- Submit -->
+            <div class="form-group">
+                <label class="form-label">&nbsp;</label>
+                <button type="submit" class="btn btn-primary btn-block">Apply Filters</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- PRODUCTS GRID -->
+{% if products %}
+<div class="product-grid">
+    {% for product in products %}
+    <div class="card product-card">
+        <!-- Wishlist Button -->
+        <a href="/add_to_wishlist/{{ product.id }}" class="wishlist-btn {% if product.id in wishlist_ids %}active{% endif %}">
+            {% if product.id in wishlist_ids %}❤{% else %}🤍{% endif %}
+        </a>
+
+        <!-- Stock Badge -->
+        {% if product.stock == 0 %}
+        <span class="product-badge">Out of Stock</span>
+        {% elif product.stock < 10 %}
+        <span class="product-badge stock">Low Stock</span>
+        {% endif %}
+
+        <!-- Product Image -->
+        <div class="product-image">
+            {% if product.image %}
+            <a href="/product/{{ product.id }}">
+                <img src="{{ url_for('static', filename='uploads/' + product.image) }}" alt="{{ product.name }}">
+            </a>
+            {% else %}
+            <a href="/product/{{ product.id }}">
+                <img src="https://via.placeholder.com/300x250?text=No+Image" alt="{{ product.name }}">
+            </a>
+            {% endif %}
+        </div>
+
+        <!-- Product Info -->
+        <div class="product-info">
+            <h3 class="product-title">
+                <a href="/product/{{ product.id }}">{{ product.name }}</a>
+            </h3>
+            <p class="product-category">{{ product.category }}</p>
+            <p class="product-price">₹{{ "%.2f"|format(product.price) }}</p>
+            
+            {% if product.description %}
+            <p class="product-description">{{ product.description[:80] }}{% if product.description|length > 80 %}...{% endif %}</p>
+            {% endif %}
+
+            <div class="product-actions">
+                <a href="/product/{{ product.id }}" class="btn btn-secondary btn-sm">View Details</a>
+                {% if product.stock > 0 %}
+                <a href="/add_to_cart/{{ product.id }}" class="btn btn-primary btn-sm">Add to Cart</a>
+                {% else %}
+                <button class="btn btn-secondary btn-sm" disabled>Out of Stock</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">📦</div>
+    <h3>No Products Found</h3>
+    <p>Try adjusting your filters or search terms</p>
+    <a href="/products" class="btn btn-primary">Clear Filters</a>
+</div>
+{% endif %}
+{% endblock %}

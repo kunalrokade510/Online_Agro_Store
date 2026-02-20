@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Payment - Agro Store{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4">💳 Checkout</h1>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+    <!-- Payment Form -->
+    <div class="card">
+        <div class="card-header">Payment Details</div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="form-group">
+                    <label class="form-label">Select Payment Method:</label>
+                    <select name="payment_method" class="form-control" required>
+                        <option value="">-- Choose Payment Method --</option>
+                        <option value="cod">Cash on Delivery</option>
+                        <option value="upi">UPI</option>
+                        <option value="card">Credit/Debit Card</option>
+                        <option value="netbanking">Net Banking</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Delivery Address:</label>
+                    <textarea name="address" class="form-control" rows="3" placeholder="Enter your delivery address" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Phone Number:</label>
+                    <input type="tel" name="phone" class="form-control" placeholder="Enter your contact number" required>
+                </div>
+
+                <button type="submit" class="btn btn-success btn-block btn-lg">Place Order</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="card">
+        <div class="card-header">Order Summary</div>
+        <div class="card-body">
+            {% if cart_items %}
+            {% for item in cart_items %}
+            <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                <span>{{ item.name }} × {{ item.quantity }}</span>
+                <span>₹{{ "%.2f"|format(item.price * item.quantity) }}</span>
+            </div>
+            {% endfor %}
+            
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid #2ecc71;">
+                <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold;">
+                    <span>Total:</span>
+                    <span class="text-primary">₹{{ "%.2f"|format(total) }}</span>
+                </div>
+            </div>
+            {% else %}
+            <p class="text-muted">No items in cart</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-4">
+    <a href="/cart" class="btn btn-secondary">← Back to Cart</a>
+</div>
+{% endblock %}

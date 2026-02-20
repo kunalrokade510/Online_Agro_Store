@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - Agro Store{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4">👤 My Profile</h1>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+    <!-- Profile Form -->
+    <div class="card">
+        <div class="card-header">Edit Profile</div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="form-label">Full Name:</label>
+                    <input type="text" name="name" class="form-control" value="{{ profile.name if profile else user.name }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Date of Birth:</label>
+                    <input type="date" name="dob" class="form-control" value="{{ profile.dob if profile else '' }}">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Gender:</label>
+                    <select name="gender" class="form-control">
+                        <option value="">Select Gender</option>
+                        <option value="Male" {% if profile and profile.gender == 'Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if profile and profile.gender == 'Female' %}selected{% endif %}>Female</option>
+                        <option value="Other" {% if profile and profile.gender == 'Other' %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Phone:</label>
+                    <input type="tel" name="phone" class="form-control" value="{{ profile.phone if profile else '' }}" placeholder="+91 1234567890">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Address:</label>
+                    <textarea name="address" class="form-control" rows="3" placeholder="Enter your address">{{ profile.address if profile else '' }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Profile Picture:</label>
+                    <input type="file" name="image" class="form-control" accept="image/*" onchange="previewImage(this, 'profile-preview')">
+                </div>
+
+                {% if profile and profile.image %}
+                <div class="form-group">
+                    <img id="profile-preview" src="{{ url_for('static', filename='uploads/' + profile.image) }}" style="max-width: 200px; border-radius: 12px;">
+                </div>
+                {% else %}
+                <div class="form-group">
+                    <img id="profile-preview" src="" style="max-width: 200px; border-radius: 12px; display: none;">
+                </div>
+                {% endif %}
+
+                <button type="submit" class="btn btn-primary btn-block">Update Profile</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Account Info -->
+    <div>
+        <div class="card mb-3">
+            <div class="card-header">Account Information</div>
+            <div class="card-body">
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Name:</strong> {{ user.name }}</p>
+                {% if profile %}
+                <p><strong>Phone:</strong> {{ profile.phone if profile.phone else 'Not provided' }}</p>
+                <p><strong>Gender:</strong> {{ profile.gender if profile.gender else 'Not provided' }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Quick Actions</div>
+            <div class="card-body">
+                <a href="/user/change_password" class="btn btn-warning btn-block mb-2">🔐 Change Password</a>
+                <a href="/orders" class="btn btn-primary btn-block mb-2">📦 My Orders</a>
+                <a href="/wishlist" class="btn btn-secondary btn-block mb-2">❤️ My Wishlist</a>
+                <a href="/cart" class="btn btn-success btn-block">🛒 My Cart</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found{% endblock %}
+
+{% block content %}
+<div class="empty-state" style="padding: 6rem 0;">
+    <div class="empty-state-icon" style="font-size: 8rem;">🔍</div>
+    <h1 style="font-size: 3rem; margin-bottom: 1rem;">404</h1>
+    <h3>Oops! Page Not Found</h3>
+    <p style="font-size: 1.2rem; margin-bottom: 2rem;">The page you're looking for doesn't exist or has been moved.</p>
+    
+    <div>
+        <a href="/" class="btn btn-primary btn-lg">🏠 Go Home</a>
+        {% if session.get('user_id') %}
+        <a href="/products" class="btn btn-secondary btn-lg">🛒 Browse Products</a>
+        {% endif %}
+        {% if session.get('admin') %}
+        <a href="/admin/dashboard" class="btn btn-secondary btn-lg">📊 Dashboard</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
